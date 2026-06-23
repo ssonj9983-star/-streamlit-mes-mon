@@ -45,6 +45,14 @@ def _build_engine():
         pool_recycle=1800,     # 30분마다 커넥션 재생성 (MariaDB wait_timeout 대응)
         pool_pre_ping=True,    # 사용 전 커넥션 유효성 검사
         echo=False,
+        # ─── 한국 시간대 고정 (KST, +09:00) ──────────────────────
+        # 모든 커넥션에서 세션 타임존을 한국(+09:00)으로 강제합니다.
+        # 이렇게 하면 SQL의 NOW()/CURDATE() 및 DATETIME/TIMESTAMP 반환값이
+        # 실행 환경(Streamlit Cloud=UTC / 개인 서버 등)이나 DB 서버 OS
+        # 타임존과 무관하게 항상 한국 시간 기준으로 동일하게 나옵니다.
+        # named zone('Asia/Seoul') 대신 숫자 오프셋을 사용해 MySQL/MariaDB
+        # 타임존 테이블이 설치돼 있지 않아도 항상 동작합니다.
+        connect_args={"init_command": "SET time_zone = '+09:00'"},
     )
     return engine
 
