@@ -1,22 +1,15 @@
 [server]
-# 모든 네트워크 인터페이스에서 수신 (외부 접속 허용)
-address = "0.0.0.0"
-port = 8502
-
-# CORS / 헤더 허용 (외부 도메인에서 접근 시 필요)
-enableCORS = false
-enableXsrfProtection = false
-
 # 브라우저 자동 실행 비활성화 (서버 환경용)
 headless = true
 
 # 파일 감시 폴링 (네트워크 드라이브 / WSL 환경 안정성)
 fileWatcherType = "poll"
 
+# ⚠ address / port 는 여기에 두지 않습니다.
+#   - Streamlit Cloud: 기본 포트(8501)로 떠야 health check 통과
+#   - 로컬 외부접속(0.0.0.0:8502): run.bat 에서 CLI 옵션으로 지정
+
 [browser]
-# 외부 접속 URL 표시용 (실제 동작에는 영향 없음)
-serverAddress = "ssonj11.tplinkdns.com"
-serverPort = 8502
 gatherUsageStats = false
 
 [theme]

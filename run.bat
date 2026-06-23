@@ -21,7 +21,7 @@ if exist ".venv\Scripts\activate.bat" (
     exit /b 1
 )
 
-REM Streamlit 실행 (config.toml 설정에 따라 0.0.0.0:8502 로 바인딩)
-streamlit run app.py
+REM Streamlit 실행 (외부 접속용 0.0.0.0:8502 바인딩은 여기서 지정)
+streamlit run app.py --server.address 0.0.0.0 --server.port 8502
 
 pause
