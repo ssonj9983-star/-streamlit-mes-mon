@@ -133,7 +133,7 @@ def process_weekly_trend(df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     df = df.copy()
-    df["ymd"]       = pd.to_datetime(df["ymd"], format="%Y-%m-%d", errors="coerce")
+    df["ymd"]       = pd.to_datetime(df["ymd"], format="%Y%m%d", errors="coerce")
     df["date_label"] = df["ymd"].dt.strftime("%m/%d")
     df["ok_qty"]    = df["ok_qty"].fillna(0).astype(int)
     df["ng_qty"]    = df["ng_qty"].fillna(0).astype(int)

@@ -132,10 +132,9 @@ with st.sidebar:
         value=datetime.now(KST).date(),
         max_value=datetime.now(KST).date(),
     )
-    target_ymd = (selected_date - timedelta(days=1)).strftime("%Y%m%d")
-    # target_ymd    = selected_date.strftime("%Y%m%d")
-    # target_ymd8 =  selected_date.strftime("%Y%m%d")
-    target_ymd8 = (selected_date - timedelta(days=1)).strftime("%Y%m%d")
+    # 개인서버(정답 데이터)와 동일하게 "조회 당일" 기준으로 조회
+    target_ymd  = selected_date.strftime("%Y%m%d")
+    target_ymd8 = selected_date.strftime("%Y%m%d")
     st.markdown("---")
 
     # DB 연결 상태
