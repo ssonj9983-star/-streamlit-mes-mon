@@ -12,6 +12,10 @@ Plotly 차트 및 Streamlit UI 컴포넌트 렌더링 모듈.
 
 import os
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+
+# 한국 시간대 — 실시간 차트 x축을 KST 기준으로 (Cloud UTC 보정)
+KST = ZoneInfo("Asia/Seoul")
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -468,7 +472,7 @@ def make_scrolling_ecg_chart(
     title          : 차트 제목
     line_color     : 라인 색상
     """
-    now    = datetime.now()
+    now    = datetime.now(KST).replace(tzinfo=None)
     x_min  = now - timedelta(minutes=window_minutes)
     x_max  = now + timedelta(minutes=2)          # 오른쪽 여백 2분
 
