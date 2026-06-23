@@ -603,7 +603,7 @@ def render_work_order_table(df: pd.DataFrame) -> None:
 
     styled = (
         show_df.style
-        .applymap(_style_achieve, subset=["달성률(%)"])
+        .map(_style_achieve, subset=["달성률(%)"])
         .format({
             "지시수량":     "{:,.0f}",
             "생산확인수량": "{:,.0f}",

@@ -1,0 +1,27 @@
+[server]
+# 모든 네트워크 인터페이스에서 수신 (외부 접속 허용)
+address = "0.0.0.0"
+port = 8502
+
+# CORS / 헤더 허용 (외부 도메인에서 접근 시 필요)
+enableCORS = false
+enableXsrfProtection = false
+
+# 브라우저 자동 실행 비활성화 (서버 환경용)
+headless = true
+
+# 파일 감시 폴링 (네트워크 드라이브 / WSL 환경 안정성)
+fileWatcherType = "poll"
+
+[browser]
+# 외부 접속 URL 표시용 (실제 동작에는 영향 없음)
+serverAddress = "ssonj11.tplinkdns.com"
+serverPort = 8502
+gatherUsageStats = false
+
+[theme]
+base = "dark"
+primaryColor = "#00FF88"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#1A1F2E"
+textColor = "#FAFAFA"

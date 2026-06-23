@@ -465,7 +465,7 @@ def get_active_work_orders(target_date: str | None = None) -> pd.DataFrame:
           -- 작업장 한글명
           LEFT JOIN pop_code z
             ON  z.mill_cd   = w.mill_cd
-            AND z.main_code = 'WRKCTR'
+            AND z.main_code = 'ROUTE'
             AND z.sub_code  = w.line_no
           -- 품명
           LEFT JOIN pop_item i
@@ -484,7 +484,7 @@ def get_active_work_orders(target_date: str | None = None) -> pd.DataFrame:
                   AND a2.wgbn    = 'W'
                   AND a2.actgbn  = 'A'
                 JOIN pop_lot_info li
-                  ON  li.mill_cd = a2.mill_cd
+                  ON  li.mill_cd = a2.mill_cd 
                   AND li.line_no = a2.line_no
                   AND li.silymd  = a2.silymd
                   AND li.silseq  = a2.silseq
