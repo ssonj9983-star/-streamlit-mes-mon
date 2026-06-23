@@ -18,6 +18,7 @@ MES/POP 실시간 모니터링 대시보드 — 메인 진입점
 import os
 import time
 from datetime import datetime, date, timedelta
+from zoneinfo import ZoneInfo
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 
@@ -27,6 +28,7 @@ import data_processor as DP
 import ui_components as UI
 
 # ─── 환경변수 ─────────────────────────────────────────────────
+KST = ZoneInfo("Asia/Seoul")  # 한국 시간대 (Cloud UTC 보정)
 REFRESH_MS = int(os.getenv("REFRESH_INTERVAL_MS", 10_000))   # 기본 10초
 
 # ═══════════════════════════════════════════════════════════════
@@ -127,8 +129,8 @@ with st.sidebar:
     # 날짜 선택
     selected_date = st.date_input(
         "📅 조회 날짜",
-        value=date.today(),
-        max_value=date.today(),
+        value=datetime.now(KST).date(),
+        max_value=datetime.now(KST).date(),
     )
     target_ymd = (selected_date - timedelta(days=1)).strftime("%Y%m%d")
     # target_ymd    = selected_date.strftime("%Y%m%d")
@@ -148,7 +150,7 @@ with st.sidebar:
     # 갱신 정보
     st.markdown("### ⏱️ 자동 갱신")
     st.info(f"매 **{REFRESH_MS // 1000}초** 자동 갱신")
-    st.caption(f"마지막 갱신: {datetime.now().strftime('%H:%M:%S')}")
+    st.caption(f"마지막 갱신: {datetime.now(KST).strftime('%H:%M:%S')}")
     st.caption(f"갱신 횟수: {refresh_count}")
 
     st.markdown("---")
@@ -175,7 +177,7 @@ with col_title:
 with col_time:
     st.markdown(
         f"<div style='text-align:right; color:#6870A0; padding-top:20px'>"
-        f"🕐 {datetime.now().strftime('%H:%M:%S')}</div>",
+        f"🕐 {datetime.now(KST).strftime('%H:%M:%S')}</div>",
         unsafe_allow_html=True,
     )
 

@@ -21,7 +21,8 @@ queries.py
 
 import os
 import logging
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import streamlit as st
@@ -31,6 +32,14 @@ from database import get_connection, get_mill_cd
 
 logger = logging.getLogger(__name__)
 CACHE_TTL = int(os.getenv("CACHE_TTL_SEC", 9))
+
+# 한국 시간대 — Streamlit Cloud 서버(UTC)에서도 KST 기준 "오늘"을 계산
+KST = ZoneInfo("Asia/Seoul")
+
+
+def _today_kst() -> date:
+    """한국 시간 기준 오늘 날짜."""
+    return datetime.now(KST).date()
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -134,7 +143,7 @@ def get_today_production_kpi(target_date: str | None = None) -> dict:
                                   →  pop_badno    (ngqty)
                                   →  pop_sil_manual (prodqty)
     """
-    ymd      = target_date or date.today().strftime("%Y-%m-%d")
+    ymd      = target_date or _today_kst().strftime("%Y-%m-%d")
     mill_cd  = get_mill_cd()
 
     sql = f"""
@@ -190,7 +199,7 @@ def get_today_achievement_rate(target_date: str | None = None) -> dict:
     pop_work_order 지시량 vs pop_lot_info 실적 양품 비교.
     작업지시의 JISIYMD 기준이므로 ymd8(YYYYMMDD) 포맷 사용.
     """
-    ymd     = target_date or date.today().strftime("%Y-%m-%d")
+    ymd     = target_date or _today_kst().strftime("%Y-%m-%d")
     ymd8    = ymd.replace("-", "")
     mill_cd = get_mill_cd()
 
@@ -237,7 +246,7 @@ def get_today_achievement_rate(target_date: str | None = None) -> dict:
 @st.cache_data(ttl=CACHE_TTL, show_spinner=False)
 def get_factory_utilization(target_date: str | None = None) -> dict:
     """pop_factory_utilization 에서 오늘 가장 최근 수집 레코드."""
-    ymd     = target_date or date.today().strftime("%Y%m%d")
+    ymd     = target_date or _today_kst().strftime("%Y%m%d")
     mill_cd = get_mill_cd()
 
     sql = """
@@ -274,7 +283,7 @@ def get_hourly_production(target_date: str | None = None) -> pd.DataFrame:
     pop_sil TOTIME 기준 시간대(HOUR)별 양품·불량·생산수량 집계.
     OK → pop_lot_info / NG → pop_badno / PROD → pop_sil_manual
     """
-    ymd     = target_date or date.today().strftime("%Y-%m-%d")
+    ymd     = target_date or _today_kst().strftime("%Y-%m-%d")
     mill_cd = get_mill_cd()
 
     sql = f""" 
@@ -312,7 +321,7 @@ def get_line_production(target_date: str | None = None) -> pd.DataFrame:
     라인(LINE_NO)별 양품·불량·생산수량, 불량률.
     작업장 한글명은 pop_code MAIN_CODE='WRKCTR' 에서 조회.
     """
-    ymd     = target_date or date.today().strftime("%Y-%m-%d")
+    ymd     = target_date or _today_kst().strftime("%Y-%m-%d")
     mill_cd = get_mill_cd()
 
     sql = f"""
@@ -363,7 +372,7 @@ def get_defect_by_type(target_date: str | None = None) -> pd.DataFrame:
       pop_badno.REFSEQ  = pop_sil_select.JISISEQ  (작업지시순번)
       pop_badno.LINE_NO = pop_sil_select.LINE_NO
     """
-    ymd     =  target_date or date.today().strftime("%Y-%m-%d")
+    ymd     =  target_date or _today_kst().strftime("%Y-%m-%d")
     mill_cd = get_mill_cd()
 
     sql = """
@@ -407,7 +416,7 @@ def get_downtime_summary(target_date: str | None = None) -> pd.DataFrame:
     pop_bigadong 에서 라인·비가동코드별 비가동시간(분) 집계.
     비가동코드 명칭은 pop_code MAIN_CODE='NOTWORKCD' 에서 JOIN.
     """
-    ymd     = target_date or date.today().strftime("%Y-%m-%d")
+    ymd     = target_date or _today_kst().strftime("%Y-%m-%d")
     mill_cd = get_mill_cd()
 
     sql = """
@@ -441,7 +450,7 @@ def get_active_work_orders(target_date: str | None = None) -> pd.DataFrame:
     오늘 지시된 작업지시 목록 + 실적 양품수량(pop_lot_info 기준) JOIN.
     달성률 = 실적 양품수량 / 지시수량.
     """
-    ymd8    = target_date or date.today().strftime("%Y%m%d")
+    ymd8    = target_date or _today_kst().strftime("%Y%m%d")
     mill_cd = get_mill_cd()
 
     sql = """
@@ -555,7 +564,7 @@ def get_weekly_production_trend() -> pd.DataFrame:
 @st.cache_data(ttl=CACHE_TTL, show_spinner=False)
 def get_utilization_timeseries(target_date: str | None = None) -> pd.DataFrame:
     """pop_factory_utilization 오늘 시계열 가동률 데이터."""
-    ymd     = target_date or date.today().strftime("%Y%m%d")
+    ymd     = target_date or _today_kst().strftime("%Y%m%d")
     mill_cd = get_mill_cd()
 
     sql = """
@@ -587,7 +596,7 @@ def get_sil_detail(target_date: str | None = None,
     - ngqty       : 불량수량 (pop_badno, 시간필터 적용)
     - jisino      : 지시번호
     """
-    ymd     = target_date or date.today().strftime("%Y-%m-%d")
+    ymd     = target_date or _today_kst().strftime("%Y-%m-%d")
     mill_cd = get_mill_cd()
 
     sql = """
